@@ -5,6 +5,7 @@ import java.util.List;
 import com.example.demo.Model.User;
 import com.example.demo.Model.Region;
 import com.example.demo.Model.Role;
+import com.example.demo.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import com.example.demo.Service.UserService;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,9 +30,10 @@ public class LoginController
     UserService userService;
 
     @GetMapping("")
-    private String home()
-    {
-        //provjera dal je korisnik ulogiran
+    private String home(Model model) {
+        model.addAttribute("currentUser", userService.findByEmail(userService.getCurrentUser()));
+
+        model.addAttribute("content", "home");
 
         return "index";
     }
@@ -43,15 +46,20 @@ public class LoginController
     }
 
     @GetMapping("/register")
-    private String register(Model model) {
+    private String register(Model model, User user) {
 
         List<Region> regions = userService.getAllRegions();
 
         model.addAttribute("regions", regions);
 
-        User user = new User();
+        if(user.getName() == null) {
+            user.setRegionId(regions.get(0).getId());
 
-        user.setRegionId(regions.get(0).getId());
+            model.addAttribute("error", false);
+        }
+        else {
+            model.addAttribute("error", true);
+        }
 
         model.addAttribute("user", user);
 
@@ -69,25 +77,35 @@ public class LoginController
     }
 
     @PostMapping("/registerNewUser")
-    public String registerNewUser(RedirectAttributes redirectAttributes, User user) {
+    public String registerNewUser(Model model, RedirectAttributes redirectAttributes, User user) {
 
-        String redirection = "redirect:/login?";
+        User checkForEmail = userService.findByEmail(user.getEmail());
 
-        try{
-            user.setPassword(userService.hashPassword(user.getPassword()));
+        if(checkForEmail != null) {
+            user.setPassword("");
+            user.setEmail("");
 
-            Role role = (userService.getRoleByName("Korisnik"));
-
-            user.setRoleId(role.getId());
-
-            userService.saveUser(user);
-
-            redirection += "success";
+            return register(model, user);
         }
-        catch (Exception ex){
-            redirection += "failed";
-        }
+        else {
+            String redirection = "redirect:/login?";
 
-        return redirection;
+            try{
+                user.setPassword(userService.hashPassword(user.getPassword()));
+
+                Role role = (userService.getRoleByName("Korisnik"));
+
+                user.setRoleId(role.getId());
+
+                userService.saveUser(user);
+
+                redirection += "success";
+            }
+            catch (Exception ex){
+                redirection += "failed";
+            }
+
+            return redirection;
+        }
     }
 }
