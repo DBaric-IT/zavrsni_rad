@@ -36,6 +36,9 @@ public class User
     //defining Region as column name
     @Column
     private Integer RegionId;
+    //defining Newsletter as column name
+    @Column
+    private boolean Newsletter;
 
     public int getId() {
         return Id;
@@ -100,4 +103,13 @@ public class User
     public void setRegionId(Integer regionId) {
         RegionId = regionId;
     }
+
+    public boolean isNewsletter() {
+        return Newsletter;
+    }
+
+    public void setNewsletter(boolean newsletter) {
+        Newsletter = newsletter;
+    }
+
 }

@@ -114,7 +114,10 @@
                            minlength="6" maxlength="10" >
                     <span class="focus-input100"></span>
                 </div>
-
+                <div class="txt1 p-b-11 mb-5 mt-3">
+                    Želim se prijaviti na newsletter
+                    <input th:field="*{newsletter}" class="custom-control-input" type="checkbox">
+                </div>
                 <div class="flex-sb-m w-full p-b-48">
                     <div class="mr-auto">
                         <a href="/login" class="txt3">
@@ -157,9 +160,12 @@
 
 <script>
     $(document).ready(function(){
+        $('.toast').toast({animation: true, delay: 4000});
         $('.toast').toast('show');
     });
 </script>
+
+
 
 </body>
 </html>

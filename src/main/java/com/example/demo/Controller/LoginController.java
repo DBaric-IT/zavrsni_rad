@@ -29,15 +29,6 @@ public class LoginController
     @Autowired
     UserService userService;
 
-    @GetMapping("")
-    private String home(Model model) {
-        model.addAttribute("currentUser", userService.findByEmail(userService.getCurrentUser()));
-
-        model.addAttribute("content", "home");
-
-        return "index";
-    }
-
     @GetMapping("/login")
     private String login(Model model) {
         model.addAttribute("user", new User());

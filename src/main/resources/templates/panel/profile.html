@@ -1,0 +1,90 @@
+<main th:fragment="profile">
+    <div class="container-fluid">
+        <div th:if="${param.success}" class="container">
+            <div class="row mt-4">
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col">
+                    <div class="toast fade hide">
+                        <div class="toast-header">
+                            Uređivanje uspiješno
+                        </div>
+                        <div class="toast-body">
+                            Uspiješno ste promjenili podatke!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+                <div class="card shadow-lg border-0 rounded-lg mt-5">
+                    <div class="card-header"><h3 class="text-center font-weight-light my-4">Uređivanje profila</h3>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/updateUser}" th:object="${currentUser}"
+                              method="post">
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="small mb-1" for="inputFirstName">Ime</label>
+                                        <input required minlength="2" maxlength="20" th:field="*{name}" class="form-control py-4" id="inputFirstName" type="text" placeholder="Unesite ime">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="small mb-1" for="inputLastName">Prezime</label>
+                                        <input required minlength="2" maxlength="20" th:field="*{surname}" class="form-control py-4" id="inputLastName" type="text" placeholder="Unesite prezime">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="small mb-1" for="inputCity">Grad</label>
+                                        <select class="form-control"  id="inputCity" name="region" th:field="*{regionId}">
+                                            <div th:each="region : ${regions}">
+                                                <option th:value="${region.getId()}" th:text="${region.getName()}"></option>
+                                            </div>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="small mb-1" for="inputAddress">Adresa</label>
+                                        <input required minlength="2" maxlength="20" th:field="*{address}" class="form-control" id="inputAddress" type="text" placeholder="Unesite adresu">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="small mb-1" for="inputEmailAddress">Email</label>
+                                        <input readonly th:field="*{email}" class="form-control py-4" id="inputEmailAddress" type="email" aria-describedby="emailHelp">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="small mb-1" for="inputPassword">Lozinka</label>
+                                        <input required minlength="6" maxlength="10" th:field="*{password}" class="form-control py-4" id="inputPassword" type="password" placeholder="Unesite password">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="small mb-1" for="inputNewsletter">Želim se prijaviti na newsletter</label>
+                                        <input th:field="*{newsletter}" id="inputNewsletter" type="checkbox">
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block form-group mt-4 mb-0">Spremi</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
