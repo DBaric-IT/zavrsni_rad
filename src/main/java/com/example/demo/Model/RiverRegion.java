@@ -1,9 +1,6 @@
 package com.example.demo.Model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 //mark class as an Entity
@@ -20,9 +17,35 @@ public class RiverRegion
     //defining UpperLevel as column name
     @Column
     private BigDecimal UpperLevel;
-    //defining RiverId as column name
+    //defining Latitude as column name
     @Column
-    private int RiverId;
+    private BigDecimal Latitude;
+    //defining UpperLevel as column name
+    @Column
+    private BigDecimal Longitude;
+    @ManyToOne
+    @JoinColumn(name="RiverId")
+    private River River;
+    //defining Region Relationship
+    @ManyToOne
+    @JoinColumn(name="RegionId")
+    private Region Region;
+
+    public BigDecimal getLatitude() {
+        return Latitude;
+    }
+
+    public void setLatitude(BigDecimal latitude) {
+        Latitude = latitude;
+    }
+
+    public BigDecimal getLongitude() {
+        return Longitude;
+    }
+
+    public void setLongitude(BigDecimal longitude) {
+        Longitude = longitude;
+    }
 
     public int getId() {
         return Id;
@@ -40,23 +63,19 @@ public class RiverRegion
         UpperLevel = upperLevel;
     }
 
-    public int getRiverId() {
-        return RiverId;
+    public com.example.demo.Model.River getRiver() {
+        return River;
     }
 
-    public void setRiverId(int riverId) {
-        RiverId = riverId;
+    public void setRiver(com.example.demo.Model.River river) {
+        River = river;
     }
 
-    public int getRegionId() {
-        return RegionId;
+    public com.example.demo.Model.Region getRegion() {
+        return Region;
     }
 
-    public void setRegionId(int regionId) {
-        RegionId = regionId;
+    public void setRegion(com.example.demo.Model.Region region) {
+        Region = region;
     }
-
-    //defining RegionId as column name
-    @Column
-    private int RegionId;
 }

@@ -25,6 +25,8 @@ public class AppController
     private String home(Model model) {
         model.addAttribute("currentUser", userService.findByEmail(userService.getCurrentUser()));
 
+        model.addAttribute("mapFeatures",   userService.generateMapFeature());
+
         model.addAttribute("content", "home");
 
         model.addAttribute("pageTitle", "Najava poplava - Početna");

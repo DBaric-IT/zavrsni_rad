@@ -1,6 +1,7 @@
 package com.example.demo.Repository;
 
 import com.example.demo.Model.Region;
+import com.example.demo.Model.RiverRegion;
 import com.example.demo.Model.Role;
 import com.example.demo.Model.User;
 import org.springframework.data.jpa.repository.Query;
@@ -23,4 +24,7 @@ public interface UserRepository extends CrudRepository<User, Integer>
 
     @Query("SELECT u FROM User u WHERE lower(u.Email) = LOWER(?1) and u.Password = ?2")
     public User checkUserLogin(String email, String password);
+
+    @Query("SELECT u FROM RiverRegion u")
+    public List<RiverRegion> findAllRiverRegions();
 }
