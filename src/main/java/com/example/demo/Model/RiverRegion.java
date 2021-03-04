@@ -2,6 +2,8 @@ package com.example.demo.Model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Set;
 
 //mark class as an Entity
 @Entity
@@ -30,6 +32,9 @@ public class RiverRegion
     @ManyToOne
     @JoinColumn(name="RegionId")
     private Region Region;
+    //defining Measurement Relationship
+    @OneToMany(mappedBy="RiverRegion")
+    private List<Measurement> measurements;
 
     public BigDecimal getLatitude() {
         return Latitude;
@@ -77,5 +82,13 @@ public class RiverRegion
 
     public void setRegion(com.example.demo.Model.Region region) {
         Region = region;
+    }
+
+    public List<Measurement> getMeasurements() {
+        return measurements;
+    }
+
+    public void setMeasurements(List<Measurement> measurements) {
+        this.measurements = measurements;
     }
 }

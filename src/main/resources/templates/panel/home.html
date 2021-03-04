@@ -147,7 +147,14 @@
                 return true;
             }
         };
+
+        function showLastMeasurements(riverRegionId){
+            window.open('/measurements?id=' + riverRegionId, '_blank', "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=1250,height=800");
+        }
+
         eval("map.on(\"load\",function(){map.addImage(\"pulsing-dot-red\",pulsingDotRed,{pixelRatio:2}),map.addImage(\"pulsing-dot-green\",pulsingDotGreen,{pixelRatio:2}),map.addSource(\"places\",{type:\"geojson\",data:{type:\"FeatureCollection\",features:[" + document.getElementById('mapFeatures').textContent + "]}}),map.addLayer({id:\"places\",type:\"symbol\",source:\"places\",layout:{\"icon-image\":\"{icon}\",\"icon-allow-overlap\":!0}}),map.on(\"click\",\"places\",function(e){for(var a=e.features[0].geometry.coordinates.slice(),o=e.features[0].properties.description;Math.abs(e.lngLat.lng-a[0])>180;)a[0]+=e.lngLat.lng>a[0]?360:-360;(new mapboxgl.Popup).setLngLat(a).setHTML(o).addTo(map)}),map.on(\"mouseenter\",\"places\",function(){map.getCanvas().style.cursor=\"pointer\"}),map.on(\"mouseleave\",\"places\",function(){map.getCanvas().style.cursor=\"\"})});");
     </script>
+
+
 
 </main>

@@ -1,16 +1,16 @@
 package com.example.demo.Service;
+import java.sql.Date;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import com.example.demo.Model.Region;
-import com.example.demo.Model.RiverRegion;
-import com.example.demo.Model.Role;
+import com.example.demo.Model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.example.demo.Model.User;
 import com.example.demo.Repository.UserRepository;
 @Service
 public class UserService
@@ -59,11 +59,15 @@ public class UserService
     public String generateMapFeature() {
         List<RiverRegion> allRiverRegions = userRepository.findAllRiverRegions();
 
+        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd.MM.yyyy.");
+
         String mapFeature = "";
 
         for (RiverRegion riverRegion : allRiverRegions)
         {
-            mapFeature += "{'type': 'Feature','properties': {'description':'<div style=\"color: black; min-width: 150px; min-height: 90px\"><b>" + riverRegion.getRiver().getName() + " - " + riverRegion.getRegion().getName() + "</b><br>Zadnje mjerenje:<br>03.03.2021. 08:00 h<br>-225 cm<br><span onclick=\"prikaziPodatkePostaje(5, false)\" style=\"cursor: pointer; text-decoration: underline\">klikni za više</span></div>','icon': 'pulsing-dot-green'},'geometry': {'type': 'Point','coordinates': [" + riverRegion.getLongitude() + ", " + riverRegion.getLatitude() + "]}},";
+            Measurement lastMeasurment = riverRegion.getMeasurements().get(riverRegion.getMeasurements().size() - 1);
+
+            mapFeature += "{'type': 'Feature','properties': {'description':'<div style=\"color: black; min-width: 150px; min-height: 90px\"><b>" + riverRegion.getRiver().getName() + " - " + riverRegion.getRegion().getName() + "</b><br>Zadnje mjerenje:<br>" + lastMeasurment.getDate().toLocalDate().format(myFormatObj) + "<br>" + lastMeasurment.getValue() + " cm<br><span onclick=\"showLastMeasurements(" + riverRegion.getId() + ")\" style=\"cursor: pointer; text-decoration: underline\">klikni za više</span></div>','icon': '" + (riverRegion.getUpperLevel().compareTo(lastMeasurment.getValue()) == 1  ? "pulsing-dot-green" : "pulsing-dot-red" ) + "'},'geometry': {'type': 'Point','coordinates': [" + riverRegion.getLongitude() + ", " + riverRegion.getLatitude() + "]}},";
         }
 
         if(mapFeature.length() > 1) {
@@ -71,6 +75,10 @@ public class UserService
         }
 
         return mapFeature;
+    }
+
+    public RiverRegion getRiverRegion(int riverRegionId){
+        return userRepository.getRiverRegion(riverRegionId);
     }
 }
 

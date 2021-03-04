@@ -1,8 +1,6 @@
 package com.example.demo.Controller;
 
-import com.example.demo.Model.Region;
-import com.example.demo.Model.Role;
-import com.example.demo.Model.User;
+import com.example.demo.Model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,6 +43,13 @@ public class AppController
         model.addAttribute("regions", userService.getAllRegions());
 
         return "index";
+    }
+
+    @GetMapping("/measurements")
+    private String measurements(Model model, int id) {
+        model.addAttribute("riverRegion", userService.getRiverRegion(id));
+
+        return "measurements";
     }
 
     @PostMapping("/updateUser")

@@ -1,9 +1,6 @@
 package com.example.demo.Repository;
 
-import com.example.demo.Model.Region;
-import com.example.demo.Model.RiverRegion;
-import com.example.demo.Model.Role;
-import com.example.demo.Model.User;
+import com.example.demo.Model.*;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -27,4 +24,7 @@ public interface UserRepository extends CrudRepository<User, Integer>
 
     @Query("SELECT u FROM RiverRegion u")
     public List<RiverRegion> findAllRiverRegions();
+
+    @Query("SELECT r FROM RiverRegion r WHERE r.Id = ?1")
+    public RiverRegion getRiverRegion(int riverRegionId);
 }

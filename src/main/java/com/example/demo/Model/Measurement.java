@@ -1,9 +1,6 @@
 package com.example.demo.Model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
 
@@ -11,7 +8,7 @@ import java.sql.Date;
 @Entity
 //defining class name as Table name
 @Table
-public class Measurment
+public class Measurement
 {
     //mark id as primary key
     @Id
@@ -24,9 +21,10 @@ public class Measurment
     //defining Value as column name
     @Column
     private BigDecimal Value;
-    //defining RiverRegionId as column name
-    @Column
-    private int RiverRegionId;
+    //defining RiverRegion Relationship
+    @ManyToOne
+    @JoinColumn(name="RiverRegionId", nullable=false)
+    private RiverRegion RiverRegion;
 
     public int getId() {
         return Id;
@@ -52,11 +50,11 @@ public class Measurment
         Value = value;
     }
 
-    public int getRiverRegionId() {
-        return RiverRegionId;
+    public com.example.demo.Model.RiverRegion getRiverRegion() {
+        return RiverRegion;
     }
 
-    public void setRiverRegionId(int riverRegionId) {
-        RiverRegionId = riverRegionId;
+    public void setRiverRegion(com.example.demo.Model.RiverRegion riverRegion) {
+        RiverRegion = riverRegion;
     }
 }
