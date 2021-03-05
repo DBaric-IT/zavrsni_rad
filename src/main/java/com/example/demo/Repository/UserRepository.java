@@ -27,4 +27,7 @@ public interface UserRepository extends CrudRepository<User, Integer>
 
     @Query("SELECT r FROM RiverRegion r WHERE r.Id = ?1")
     public RiverRegion getRiverRegion(int riverRegionId);
+
+    @Query("SELECT LOWER(r.Name) FROM Role r WHERE r.Id = ?1")
+    public String getRoleName(int id);
 }

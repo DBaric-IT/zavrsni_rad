@@ -31,6 +31,11 @@ public class LoginController
 
     @GetMapping("/login")
     private String login(Model model) {
+
+        if(!userService.getCurrentUser().equals("anonymousUser")){
+            return "redirect:/";
+        }
+
         model.addAttribute("user", new User());
 
         return "login";
@@ -38,6 +43,10 @@ public class LoginController
 
     @GetMapping("/register")
     private String register(Model model, User user) {
+
+        if(!userService.getCurrentUser().equals("anonymousUser")){
+            return "redirect:/";
+        }
 
         List<Region> regions = userService.getAllRegions();
 

@@ -1,0 +1,64 @@
+<main th:fragment="measurements">
+    <div class="container-fluid">
+        <div style="border-bottom: none;" class="card-header mb-4 mt-3">
+            <div class="float-left">
+                <div th:text="${pageTitle}"></div>
+            </div>
+            <div th:if="${currentUser != null and hideNav == null}" class="float-right">
+                <button onclick="addMeasurement()" class="btn ml-2" style="color:white; background-color:black;">
+                    Dodaj mjerenje <i class="fa fa-plus ml-2"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+                                <thead>
+                                    <tr role="row">
+                                        <th style="text-align: center; vertical-align: middle; width: 200px;" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1">Datum mjerenja</th>
+                                        <th style="text-align: center; vertical-align: middle; width: 200px;" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1">Razina</th>
+                                        <th style="text-align: center; vertical-align: middle; width: 60px;" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1">Status</th>
+                                        <th th:if="${currentUser != null and hideNav == null}" style="text-align: center; vertical-align: middle; width: 60px;" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1">Akcije</th>
+                                    </tr>
+                                </thead>
+                                <tbody th:each="measurement : ${measurements}">
+                                    <tr role="row" class="odd">
+                                        <td th:text='${measurement.getDate()}' style="text-align: center; vertical-align: middle;" class="sorting_1"></td>
+                                        <td th:text='${measurement.getValue()}' style="text-align: center; vertical-align: middle;"></td>
+                                        <td style="text-align: center; vertical-align: middle;">
+                                            <i th:class='${"fas fa-" + (measurement.getDanger() ? "exclamation-triangle" : "check-circle")}' th:style='${"color:" + (measurement.getDanger() ? "red" : "green")}'></i>
+                                        </td>
+                                        <td th:if="${currentUser != null and hideNav == null}" style="text-align: center; vertical-align: middle;">
+                                            <button th:onclick="editMeasurement([[${measurement.getId()}]])" class="btn btn-info ml-1" title="Uredi mjerenje">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                            <button th:onclick="deleteMeasurement([[${measurement.getId()}]])" class="btn btn-danger ml-1" title="Izbriši mjerenje">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function addMeasurement(){
+            console.log("add new");
+        }
+
+        function editMeasurement(id){
+            console.log("edit na " + id);
+        }
+
+        function deleteMeasurement(id){
+            console.log("delete na " + id);
+        }
+    </script>
+</main>

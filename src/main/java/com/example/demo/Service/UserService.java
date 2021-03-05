@@ -56,7 +56,7 @@ public class UserService
         return username;
     }
 
-    public String generateMapFeature() {
+    public String generateMapFeature(Boolean isAdmin) {
         List<RiverRegion> allRiverRegions = userRepository.findAllRiverRegions();
 
         DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd.MM.yyyy.");
@@ -67,7 +67,9 @@ public class UserService
         {
             Measurement lastMeasurment = riverRegion.getMeasurements().get(riverRegion.getMeasurements().size() - 1);
 
-            mapFeature += "{'type': 'Feature','properties': {'description':'<div style=\"color: black; min-width: 150px; min-height: 90px\"><b>" + riverRegion.getRiver().getName() + " - " + riverRegion.getRegion().getName() + "</b><br>Zadnje mjerenje:<br>" + lastMeasurment.getDate().toLocalDate().format(myFormatObj) + "<br>" + lastMeasurment.getValue() + " cm<br><span onclick=\"showLastMeasurements(" + riverRegion.getId() + ")\" style=\"cursor: pointer; text-decoration: underline\">klikni za više</span></div>','icon': '" + (riverRegion.getUpperLevel().compareTo(lastMeasurment.getValue()) == 1  ? "pulsing-dot-green" : "pulsing-dot-red" ) + "'},'geometry': {'type': 'Point','coordinates': [" + riverRegion.getLongitude() + ", " + riverRegion.getLatitude() + "]}},";
+            String adminOption = isAdmin ? "<br><span onclick=\"adminMeasurement(" + riverRegion.getId() + ")\" style=\"cursor: pointer; text-decoration: underline; color: red;\">Upravljaj mjerenjima</span>" : "";
+
+            mapFeature += "{'type': 'Feature','properties': {'description':'<div style=\"color: black; min-width: 150px; min-height: 90px\"><b>" + riverRegion.getRiver().getName() + " - " + riverRegion.getRegion().getName() + "</b><br>Zadnje mjerenje:<br>" + lastMeasurment.getDate().toLocalDate().format(myFormatObj) + "<br>" + lastMeasurment.getValue() + " cm<br><span onclick=\"showLastMeasurements(" + riverRegion.getId() + ")\" style=\"cursor: pointer; text-decoration: underline\">Klikni za više</span>" + adminOption + "</div>','icon': '" + (riverRegion.getUpperLevel().compareTo(lastMeasurment.getValue()) == 1  ? "pulsing-dot-green" : "pulsing-dot-red" ) + "'},'geometry': {'type': 'Point','coordinates': [" + riverRegion.getLongitude() + ", " + riverRegion.getLatitude() + "]}},";
         }
 
         if(mapFeature.length() > 1) {
@@ -79,6 +81,10 @@ public class UserService
 
     public RiverRegion getRiverRegion(int riverRegionId){
         return userRepository.getRiverRegion(riverRegionId);
+    }
+
+    public Boolean isAdmin(User user){
+        return userRepository.getRoleName(user.getRoleId()).equals("administrator");
     }
 }
 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" class="fontawesome-i2svg-active fontawesome-i2svg-complete"><head>
+    <base href="/">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -13,26 +14,31 @@
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
 <body class="sb-nav-fixed">
 
-<nav th:replace="parts/header :: header"></nav>
+<div th:if="${hideNav}">
+    <main th:replace="@{'panel/' + ${content}} :: ${content}"></main>
+</div>
+<div th:if="${hideNav == null}">
+    <nav th:replace="parts/header :: header"></nav>
 
-<div id="layoutSidenav">
+    <div id="layoutSidenav">
 
-    <div th:replace="parts/leftNavigation :: leftNavigation"></div>
+        <div th:replace="parts/leftNavigation :: leftNavigation"></div>
 
-    <div id="layoutSidenav_content">
+        <div id="layoutSidenav_content">
 
-        <main th:replace="@{'panel/' + ${content}} :: ${content}"></main>
+            <main th:replace="@{'panel/' + ${content}} :: ${content}"></main>
 
-        <footer th:replace="parts/footer :: footer"></footer>
+            <footer th:replace="parts/footer :: footer"></footer>
 
+        </div>
     </div>
 </div>
+
 <script src="scripts/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 <script src="dist/scripts.js"></script>
 <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
 <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
-<script src="dist/assets/demo/datatables-demo.js"></script>
 <script>
     $(document).ready(function(){
         $('.toast').toast({animation: true, delay: 4000});
