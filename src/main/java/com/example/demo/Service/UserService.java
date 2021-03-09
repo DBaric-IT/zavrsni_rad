@@ -3,6 +3,7 @@ import java.sql.Date;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.example.demo.Model.*;
@@ -65,9 +66,23 @@ public class UserService
 
         for (RiverRegion riverRegion : allRiverRegions)
         {
-            Measurement lastMeasurment = riverRegion.getMeasurements().get(riverRegion.getMeasurements().size() - 1);
+            List<Measurement> measurements = riverRegion.getMeasurements();
 
             String adminOption = isAdmin ? "<br><span onclick=\"adminMeasurement(" + riverRegion.getId() + ")\" style=\"cursor: pointer; text-decoration: underline; color: red;\">Upravljaj mjerenjima</span>" : "";
+
+            if(measurements.stream().count() < 1) {
+                mapFeature += "{'type': 'Feature','properties': {'description':'<div style=\"color: black; min-width: 150px; min-height: 90px\"><b>" + riverRegion.getRiver().getName() + " - " + riverRegion.getRegion().getName() + "</b><br>Zadnje mjerenje:<br> - - - <br> - - - <br><span onclick=\"showLastMeasurements(" + riverRegion.getId() + ")\" style=\"cursor: pointer; text-decoration: underline\">Klikni za više</span>" + adminOption + "</div>','icon': 'pulsing-dot-grey'},'geometry': {'type': 'Point','coordinates': [" + riverRegion.getLongitude() + ", " + riverRegion.getLatitude() + "]}},";
+
+                continue;
+            }
+
+            Collections.sort(measurements, new Comparator<Measurement>() {
+                public int compare(Measurement m1, Measurement m2) {
+                    return m1.getDate().compareTo(m2.getDate());
+                }
+            });
+
+            Measurement lastMeasurment = measurements.get(riverRegion.getMeasurements().size() - 1);
 
             mapFeature += "{'type': 'Feature','properties': {'description':'<div style=\"color: black; min-width: 150px; min-height: 90px\"><b>" + riverRegion.getRiver().getName() + " - " + riverRegion.getRegion().getName() + "</b><br>Zadnje mjerenje:<br>" + lastMeasurment.getDate().toLocalDate().format(myFormatObj) + "<br>" + lastMeasurment.getValue() + " cm<br><span onclick=\"showLastMeasurements(" + riverRegion.getId() + ")\" style=\"cursor: pointer; text-decoration: underline\">Klikni za više</span>" + adminOption + "</div>','icon': '" + (riverRegion.getUpperLevel().compareTo(lastMeasurment.getValue()) == 1  ? "pulsing-dot-green" : "pulsing-dot-red" ) + "'},'geometry': {'type': 'Point','coordinates': [" + riverRegion.getLongitude() + ", " + riverRegion.getLatitude() + "]}},";
         }

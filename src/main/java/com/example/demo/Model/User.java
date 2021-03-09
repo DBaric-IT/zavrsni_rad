@@ -13,7 +13,6 @@ public class User
     //defining id as column name
     @Column
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    //@SequenceGenerator(name = "id_Sequence", sequenceName = "ORACLE_DB_SEQ_ID")
     private int Id;
     //defining name as column name
     @Column

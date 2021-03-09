@@ -1,8 +1,12 @@
 package com.example.demo.Model;
 
+import com.example.demo.CustomModel.CustomMeasurement;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 //mark class as an Entity
 @Entity
@@ -14,6 +18,7 @@ public class Measurement
     @Id
     //defining id as column name
     @Column
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int Id;
     //defining date as column name
     @Column
@@ -56,5 +61,19 @@ public class Measurement
 
     public void setRiverRegion(com.example.demo.Model.RiverRegion riverRegion) {
         RiverRegion = riverRegion;
+    }
+
+    public Measurement() {
+
+    }
+
+    public Measurement(CustomMeasurement customMeasurement) {
+        this.setId(customMeasurement.getId());
+        this.setValue(new BigDecimal(customMeasurement.getValue()));
+        try {
+            this.setDate(new java.sql.Date(new SimpleDateFormat("dd.MM.yyyy.").parse(customMeasurement.getDate()).getTime()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 }

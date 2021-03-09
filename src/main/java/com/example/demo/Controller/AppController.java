@@ -2,12 +2,17 @@ package com.example.demo.Controller;
 
 import com.example.demo.CustomModel.CustomMeasurement;
 import com.example.demo.Model.*;
+import com.example.demo.Repository.MeasurementRepository;
+import com.example.demo.Service.MeasurementService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import com.example.demo.Service.UserService;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.time.format.DateTimeFormatter;
 
 //creating Controller
 @Controller
@@ -16,6 +21,9 @@ public class AppController
     //autowired the UserService class
     @Autowired
     UserService userService;
+    //autowired the Measurement class
+    @Autowired
+    MeasurementService measurementService;
 
     @GetMapping("")
     private String home(Model model) {
@@ -91,5 +99,92 @@ public class AppController
         userService.saveUser(user);
 
         return "redirect:/profile?success";
+    }
+
+    @GetMapping("/admin/newMeasurement")
+    public String newMeasurement(Model model, int id){
+
+        User user = userService.findByEmail(userService.getCurrentUser());
+
+        if(!userService.isAdmin(user)){
+            return measurements(model, id);
+        }
+
+        model.addAttribute("hideNav", true);
+        model.addAttribute("content", "modalView");
+
+        RiverRegion riverRegion = userService.getRiverRegion(id);
+
+        String titles = "Dodaj mjerenje za " + riverRegion.getRiver().getName() + " - " + riverRegion.getRegion().getName();
+
+        CustomMeasurement customMeasurement = new CustomMeasurement();
+        customMeasurement.setRiverRegionId(riverRegion.getId());
+        model.addAttribute("measurement", customMeasurement);
+
+        model.addAttribute("sectionTitle",titles);
+
+        model.addAttribute("pageTitle", "Najava poplava - " + titles);
+
+        return "index";
+    }
+
+    @GetMapping("/admin/editMeasurement")
+    public String editMeasurement(Model model, int id){
+
+        User user = userService.findByEmail(userService.getCurrentUser());
+
+        if(!userService.isAdmin(user)){
+            return home(model);
+        }
+
+        model.addAttribute("hideNav", true);
+        model.addAttribute("content", "modalView");
+
+        Measurement measurement = measurementService.getMeasurement(id);
+
+        CustomMeasurement customMeasurement = new CustomMeasurement(measurement, DateTimeFormatter.ofPattern("dd.MM.yyyy."));
+        customMeasurement.setValue(customMeasurement.getValue().replace(" cm", ""));
+        model.addAttribute("measurement", customMeasurement);
+
+        RiverRegion riverRegion = measurement.getRiverRegion();
+
+        String titles = "Uredi mjerenje za " + riverRegion.getRiver().getName() + " - " + riverRegion.getRegion().getName();
+
+        model.addAttribute("sectionTitle",titles);
+
+        model.addAttribute("pageTitle", "Najava poplava - " + titles);
+
+        return "index";
+    }
+
+    @PostMapping("/updateMeasurement")
+    public String updateMeasurement(Model model, CustomMeasurement customMeasurement) {
+
+        User user = userService.findByEmail(userService.getCurrentUser());
+
+        if(!userService.isAdmin(user)){
+            return home(model);
+        }
+
+        Measurement measurement = new Measurement(customMeasurement);
+
+        measurement.setRiverRegion(userService.getRiverRegion(customMeasurement.getRiverRegionId()));
+
+        measurementService.saveMeasurement(measurement);
+
+        return "redirect:/?close";
+    }
+
+    @PostMapping("/admin/deleteMeasurement")
+    public ResponseEntity deleteMeasurement(int id){
+        User user = userService.findByEmail(userService.getCurrentUser());
+
+        if(!userService.isAdmin(user)){
+            return ResponseEntity.notFound().build();
+        }
+
+        measurementService.deleteMeasurement(measurementService.getMeasurement(id));
+
+        return ResponseEntity.ok().build();
     }
 }
