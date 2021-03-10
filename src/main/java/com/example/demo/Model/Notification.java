@@ -13,16 +13,18 @@ public class Notification
     @Id
     //defining Id as column name
     @Column
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int Id;
-    //defining Description as column name
+    //defining Message as column name
     @Column
-    private String Description;
-    //defining Seen as column name
+    private String Message;
+    //defining Subject as column name
     @Column
-    private Boolean Seen;
-    //defining UserId as column name
-    @Column
-    private int UserId;
+    private String Subject;
+    //defining User Relationship
+    @ManyToOne
+    @JoinColumn(name="UserId", nullable=false)
+    private User User;
 
     public int getId() {
         return Id;
@@ -32,27 +34,27 @@ public class Notification
         Id = id;
     }
 
-    public String getDescription() {
-        return Description;
+    public String getMessage() {
+        return Message;
     }
 
-    public void setDescription(String description) {
-        Description = description;
+    public void setMessage(String message) {
+        Message = message;
     }
 
-    public Boolean getSeen() {
-        return Seen;
+    public String getSubject() {
+        return Subject;
     }
 
-    public void setSeen(Boolean seen) {
-        Seen = seen;
+    public void setSubject(String subject) {
+        Subject = subject;
     }
 
-    public int getUserId() {
-        return UserId;
+    public com.example.demo.Model.User getUser() {
+        return User;
     }
 
-    public void setUserId(int userId) {
-        UserId = userId;
+    public void setUser(com.example.demo.Model.User user) {
+        User = user;
     }
 }

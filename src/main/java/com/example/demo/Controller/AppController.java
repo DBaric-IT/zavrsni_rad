@@ -4,6 +4,7 @@ import com.example.demo.CustomModel.CustomMeasurement;
 import com.example.demo.Model.*;
 import com.example.demo.Repository.MeasurementRepository;
 import com.example.demo.Service.MeasurementService;
+import com.example.demo.Service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -11,8 +12,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import com.example.demo.Service.UserService;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.thymeleaf.util.DateUtils;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
 
 //creating Controller
 @Controller
@@ -24,9 +31,13 @@ public class AppController
     //autowired the Measurement class
     @Autowired
     MeasurementService measurementService;
+    //autowired the Notification class
+    @Autowired
+    NotificationService notificationService;
 
     @GetMapping("")
-    private String home(Model model) {
+    private String home(Model model) throws Exception {
+
         User user = userService.findByEmail(userService.getCurrentUser());
 
         model.addAttribute("currentUser", user);
@@ -129,7 +140,7 @@ public class AppController
     }
 
     @GetMapping("/admin/editMeasurement")
-    public String editMeasurement(Model model, int id){
+    public String editMeasurement(Model model, int id) throws Exception{
 
         User user = userService.findByEmail(userService.getCurrentUser());
 
@@ -158,7 +169,7 @@ public class AppController
     }
 
     @PostMapping("/updateMeasurement")
-    public String updateMeasurement(Model model, CustomMeasurement customMeasurement) {
+    public String updateMeasurement(Model model, CustomMeasurement customMeasurement) throws Exception {
 
         User user = userService.findByEmail(userService.getCurrentUser());
 
@@ -168,9 +179,17 @@ public class AppController
 
         Measurement measurement = new Measurement(customMeasurement);
 
-        measurement.setRiverRegion(userService.getRiverRegion(customMeasurement.getRiverRegionId()));
+        RiverRegion riverRegion = userService.getRiverRegion(customMeasurement.getRiverRegionId());
 
+        measurement.setRiverRegion(riverRegion);
+
+        //update measurement table in DB
         measurementService.saveMeasurement(measurement);
+
+        //send email to users who have "newsletter tag" and users who is signed to that region if measurement is "dangerous"
+        if(riverRegion.getUpperLevel().compareTo(measurement.getValue()) != 1 && isSameDay(new java.util.Date(measurement.getDate().getTime()), new Date())){
+            notificationService.sendEmailToUsers(measurement);
+        }
 
         return "redirect:/?close";
     }
@@ -186,5 +205,14 @@ public class AppController
         measurementService.deleteMeasurement(measurementService.getMeasurement(id));
 
         return ResponseEntity.ok().build();
+    }
+
+    public static boolean isSameDay(Date date1, Date date2) {
+        Calendar cal1 = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+        cal1.setTime(date1);
+        cal2.setTime(date2);
+        return cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&
+                cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
     }
 }

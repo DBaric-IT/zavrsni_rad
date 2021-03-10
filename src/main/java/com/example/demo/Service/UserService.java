@@ -1,18 +1,18 @@
 package com.example.demo.Service;
-import java.sql.Date;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import com.example.demo.Model.*;
+import com.example.demo.Notification.SendEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.demo.Repository.UserRepository;
+
 @Service
 public class UserService
 {
@@ -102,6 +102,7 @@ public class UserService
         return userRepository.getRoleName(user.getRoleId()).equals("administrator");
     }
 }
+
 
 
 
